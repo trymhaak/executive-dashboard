@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Security Dashboard - Streamlined</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <div class="header-content">
+                <h1>Executive Security Dashboard</h1>
+                <p class="dashboard-subtitle">Strategic security posture at a glance</p>
+                <div class="dashboard-description">
+                    <p>Streamlined view focused on executive decision-making</p>
+                </div>
+            </div>
+            <div class="header-controls">
+                <div class="time-filter">
+                    <label for="timeRange">Time Period:</label>
+                    <select id="timeRange">
+                        <option value="7">Last 7 Days</option>
+                        <option value="30" selected>Last 30 Days</option>
+                        <option value="90">Last Quarter</option>
+                        <option value="180">Last 6 Months</option>
+                    </select>
+                </div>
+                <button id="printButton" class="print-button">
+                    <span class="print-icon">🖨️</span>
+                    Print Report
+                </button>
+            </div>
+        </header>
+
+        <!-- Executive Summary Section -->
+        <div class="summary-section">
+            <div class="summary-card">
+                <div class="summary-value">42</div>
+                <div class="summary-label">Total Incidents</div>
+                <div class="summary-trend positive">↓ 12% from previous period</div>
+            </div>
+            <div class="summary-card high">
+                <div class="summary-value">7</div>
+                <div class="summary-label">High Severity Incidents</div>
+                <div class="summary-trend negative">↑ 2 from previous period</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value">2.5h</div>
+                <div class="summary-label">Avg. Response Time</div>
+                <div class="summary-trend positive">↓ 0.8h from previous period</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value">12.4h</div>
+                <div class="summary-label">Avg. Resolution Time</div>
+                <div class="summary-trend negative">↑ 1.2h from previous period</div>
+            </div>
+        </div>
+
+        <!-- Key Insights Panel -->
+        <div class="insights-panel">
+            <h2>Key Security Insights</h2>
+            <ul class="insights-list">
+                <li><span class="insight-indicator critical">⚠️</span> <strong>High severity incidents increased by 40%</strong> - Primarily affecting email infrastructure</li>
+                <li><span class="insight-indicator positive">✓</span> <strong>Overall incident volume decreased by 12%</strong> - Security controls showing effectiveness</li>
+                <li><span class="insight-indicator warning">⚠</span> <strong>Resolution times increasing</strong> - Consider resource allocation review</li>
+            </ul>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="dashboard-tabs">
+            <button class="tab-button active" data-tab="overview">Strategic Overview</button>
+            <button class="tab-button" data-tab="incidents">Incident Analysis</button>
+            <button class="tab-button" data-tab="trends">Security Trends</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div class="tab-content active" id="overview-tab">
+            <div class="section-header">
+                <h2>Strategic Security Overview</h2>
+                <p>Key metrics for executive decision-making</p>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="chart-container wide">
+                    <h3>Security Incidents by Severity</h3>
+                    <p class="chart-description">Distribution of incidents by impact level</p>
+                    <canvas id="severityChart"></canvas>
+                </div>
+                
+                <div class="chart-container">
+                    <h3>Incident Status</h3>
+                    <p class="chart-description">Current state of all security incidents</p>
+                    <canvas id="statusChart"></canvas>
+                </div>
+                
+                <div class="chart-container">
+                    <h3>Weekly Alert Volume</h3>
+                    <p class="chart-description">Alert trends over time</p>
+                    <canvas id="alertVolumeChart"></canvas>
+                </div>
+                
+                <div class="chart-container wide">
+                    <h3>Incident Handling Efficiency</h3>
+                    <p class="chart-description">Response and resolution time metrics</p>
+                    <canvas id="efficiencyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Incidents Tab -->
+        <div class="tab-content" id="incidents-tab">
+            <div class="section-header">
+                <h2>Incident Analysis</h2>
+                <p>Detailed breakdown of security incidents</p>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="chart-container wide">
+                    <h3>Top Alert Sources</h3>
+                    <p class="chart-description">Security products generating the most alerts</p>
+                    <canvas id="alertSourcesChart"></canvas>
+                </div>
+                
+                <div class="chart-container wide">
+                    <h3>Top Targeted Systems</h3>
+                    <p class="chart-description">Most frequently targeted systems</p>
+                    <canvas id="targetedSystemsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trends Tab -->
+        <div class="tab-content" id="trends-tab">
+            <div class="section-header">
+                <h2>Security Trends</h2>
+                <p>Long-term security posture analysis</p>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="chart-container wide">
+                    <h3>MITRE ATT&CK Coverage</h3>
+                    <p class="chart-description">Detection coverage across MITRE ATT&CK tactics</p>
+                    <canvas id="mitreCoverageChart"></canvas>
+                </div>
+                
+                <div class="chart-container wide">
+                    <h3>Security Recommendations</h3>
+                    <div class="recommendations-container">
+                        <div class="recommendation-item">
+                            <div class="recommendation-priority high">High Priority</div>
+                            <div class="recommendation-content">
+                                <h4>Enhance Email Security Controls</h4>
+                                <p>Implement additional phishing protection measures to address the increase in email-based attacks.</p>
+                            </div>
+                        </div>
+                        <div class="recommendation-item">
+                            <div class="recommendation-priority medium">Medium Priority</div>
+                            <div class="recommendation-content">
+                                <h4>Optimize Incident Response Process</h4>
+                                <p>Review and streamline incident response procedures to address increasing resolution times.</p>
+                            </div>
+                        </div>
+                        <div class="recommendation-item">
+                            <div class="recommendation-priority medium">Medium Priority</div>
+                            <div class="recommendation-content">
+                                <h4>Expand Security Monitoring</h4>
+                                <p>Increase coverage for credential access and lateral movement detection based on MITRE ATT&CK analysis.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
