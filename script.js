@@ -6,10 +6,22 @@ document.addEventListener('DOMContentLoaded', function() {
     setupTabNavigation();
     
     // Initialize charts with dummy data
-    initializeCharts();
+    setTimeout(function() {
+        initializeCharts();
+    }, 100);
     
     // Set up print functionality
     setupPrintButton();
+    
+    // Force redraw on tab change to fix chart display issues
+    const tabButtons = document.querySelectorAll('.tab-button');
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            setTimeout(function() {
+                window.dispatchEvent(new Event('resize'));
+            }, 100);
+        });
+    });
 });
 
 // Function to set up tab navigation
@@ -76,7 +88,12 @@ function initializeCharts() {
 
 // Function to create Severity Chart
 function createSeverityChart() {
-    const ctx = document.getElementById('severityChart').getContext('2d');
+    const ctx = document.getElementById('severityChart');
+    
+    // Clear any existing chart
+    if (window.severityChartInstance) {
+        window.severityChartInstance.destroy();
+    }
     
     const data = {
         labels: ['Critical', 'High', 'Medium', 'Low', 'Informational'],
@@ -94,10 +111,11 @@ function createSeverityChart() {
         }]
     };
     
-    new Chart(ctx, {
+    window.severityChartInstance = new Chart(ctx, {
         type: 'bar',
         data: data,
         options: {
+            animation: false,
             responsive: true,
             maintainAspectRatio: false,
             layout: {
@@ -123,6 +141,7 @@ function createSeverityChart() {
             },
             scales: {
                 y: {
+                    display: true,
                     beginAtZero: true,
                     title: {
                         display: true,
@@ -132,13 +151,16 @@ function createSeverityChart() {
                         }
                     },
                     ticks: {
+                        display: true,
                         font: {
                             size: 11
                         }
                     }
                 },
                 x: {
+                    display: true,
                     ticks: {
+                        display: true,
                         font: {
                             size: 11
                         }
@@ -151,7 +173,12 @@ function createSeverityChart() {
 
 // Function to create Status Chart
 function createStatusChart() {
-    const ctx = document.getElementById('statusChart').getContext('2d');
+    const ctx = document.getElementById('statusChart');
+    
+    // Clear any existing chart
+    if (window.statusChartInstance) {
+        window.statusChartInstance.destroy();
+    }
     
     const data = {
         labels: ['Active', 'Closed', 'In Progress', 'New'],
@@ -167,10 +194,11 @@ function createStatusChart() {
         }]
     };
     
-    new Chart(ctx, {
+    window.statusChartInstance = new Chart(ctx, {
         type: 'pie',
         data: data,
         options: {
+            animation: false,
             responsive: true,
             maintainAspectRatio: false,
             layout: {
@@ -179,6 +207,7 @@ function createStatusChart() {
             plugins: {
                 legend: {
                     position: 'right',
+                    display: true,
                     labels: {
                         boxWidth: 12,
                         padding: 10,
@@ -203,7 +232,12 @@ function createStatusChart() {
 
 // Function to create Weekly Alert Volume Chart
 function createWeeklyAlertVolumeChart() {
-    const ctx = document.getElementById('alertVolumeChart').getContext('2d');
+    const ctx = document.getElementById('alertVolumeChart');
+    
+    // Clear any existing chart
+    if (window.alertVolumeChartInstance) {
+        window.alertVolumeChartInstance.destroy();
+    }
     
     const labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7', 'Week 8'];
     
@@ -220,10 +254,11 @@ function createWeeklyAlertVolumeChart() {
         }]
     };
     
-    new Chart(ctx, {
+    window.alertVolumeChartInstance = new Chart(ctx, {
         type: 'line',
         data: data,
         options: {
+            animation: false,
             responsive: true,
             maintainAspectRatio: false,
             layout: {
@@ -245,6 +280,7 @@ function createWeeklyAlertVolumeChart() {
             },
             scales: {
                 y: {
+                    display: true,
                     beginAtZero: true,
                     title: {
                         display: true,
@@ -254,13 +290,16 @@ function createWeeklyAlertVolumeChart() {
                         }
                     },
                     ticks: {
+                        display: true,
                         font: {
                             size: 11
                         }
                     }
                 },
                 x: {
+                    display: true,
                     ticks: {
+                        display: true,
                         font: {
                             size: 11
                         },
@@ -275,7 +314,12 @@ function createWeeklyAlertVolumeChart() {
 
 // Function to create Incident Handling Efficiency Chart
 function createEfficiencyChart() {
-    const ctx = document.getElementById('efficiencyChart').getContext('2d');
+    const ctx = document.getElementById('efficiencyChart');
+    
+    // Clear any existing chart
+    if (window.efficiencyChartInstance) {
+        window.efficiencyChartInstance.destroy();
+    }
     
     const data = {
         labels: ['Average', 'Median', 'Target'],
@@ -295,23 +339,50 @@ function createEfficiencyChart() {
         ]
     };
     
-    new Chart(ctx, {
+    window.efficiencyChartInstance = new Chart(ctx, {
         type: 'bar',
         data: data,
         options: {
+            animation: false,
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    position: 'top'
+                    position: 'top',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 5,
+                        font: {
+                            size: 11
+                        }
+                    }
                 }
             },
             scales: {
                 y: {
+                    display: true,
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Hours'
+                        text: 'Hours',
+                        font: {
+                            size: 12
+                        }
+                    },
+                    ticks: {
+                        display: true,
+                        font: {
+                            size: 10
+                        }
+                    }
+                },
+                x: {
+                    display: true,
+                    ticks: {
+                        display: true,
+                        font: {
+                            size: 10
+                        }
                     }
                 }
             }
@@ -321,7 +392,12 @@ function createEfficiencyChart() {
 
 // Function to create Alert Sources Chart
 function createAlertSourcesChart() {
-    const ctx = document.getElementById('alertSourcesChart').getContext('2d');
+    const ctx = document.getElementById('alertSourcesChart');
+    
+    // Clear any existing chart
+    if (window.alertSourcesChartInstance) {
+        window.alertSourcesChartInstance.destroy();
+    }
     
     const data = {
         labels: ['Azure Security Center', 'Microsoft Defender ATP', 'Azure AD Identity Protection', 'Office 365 ATP', 'Azure Firewall'],
@@ -333,24 +409,47 @@ function createAlertSourcesChart() {
         }]
     };
     
-    new Chart(ctx, {
+    window.alertSourcesChartInstance = new Chart(ctx, {
         type: 'bar',
         data: data,
         options: {
+            animation: false,
             indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
                 legend: {
                     display: false
+                },
+                tooltip: {
+                    enabled: true
                 }
             },
             scales: {
                 x: {
+                    display: true,
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Number of Alerts'
+                        text: 'Number of Alerts',
+                        font: {
+                            size: 12
+                        }
+                    },
+                    ticks: {
+                        display: true,
+                        font: {
+                            size: 10
+                        }
+                    }
+                },
+                y: {
+                    display: true,
+                    ticks: {
+                        display: true,
+                        font: {
+                            size: 10
+                        }
                     }
                 }
             }
@@ -360,7 +459,12 @@ function createAlertSourcesChart() {
 
 // Function to create Targeted Systems Chart
 function createTargetedSystemsChart() {
-    const ctx = document.getElementById('targetedSystemsChart').getContext('2d');
+    const ctx = document.getElementById('targetedSystemsChart');
+    
+    // Clear any existing chart
+    if (window.targetedSystemsChartInstance) {
+        window.targetedSystemsChartInstance.destroy();
+    }
     
     const data = {
         labels: ['Email Server', 'Web Application', 'Domain Controller', 'File Server', 'Database Server'],
@@ -372,24 +476,47 @@ function createTargetedSystemsChart() {
         }]
     };
     
-    new Chart(ctx, {
+    window.targetedSystemsChartInstance = new Chart(ctx, {
         type: 'bar',
         data: data,
         options: {
+            animation: false,
             indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
                 legend: {
                     display: false
+                },
+                tooltip: {
+                    enabled: true
                 }
             },
             scales: {
                 x: {
+                    display: true,
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Number of Alerts'
+                        text: 'Number of Alerts',
+                        font: {
+                            size: 12
+                        }
+                    },
+                    ticks: {
+                        display: true,
+                        font: {
+                            size: 10
+                        }
+                    }
+                },
+                y: {
+                    display: true,
+                    ticks: {
+                        display: true,
+                        font: {
+                            size: 10
+                        }
                     }
                 }
             }
@@ -399,7 +526,12 @@ function createTargetedSystemsChart() {
 
 // Function to create Security Posture Chart
 function createSecurityPostureChart() {
-    const ctx = document.getElementById('securityPostureChart').getContext('2d');
+    const ctx = document.getElementById('securityPostureChart');
+    
+    // Clear any existing chart
+    if (window.securityPostureChartInstance) {
+        window.securityPostureChartInstance.destroy();
+    }
     
     const data = {
         labels: ['Visibility', 'Protection', 'Detection', 'Response', 'Recovery'],
@@ -427,10 +559,11 @@ function createSecurityPostureChart() {
         }]
     };
     
-    new Chart(ctx, {
+    window.securityPostureChartInstance = new Chart(ctx, {
         type: 'radar',
         data: data,
         options: {
+            animation: false,
             responsive: true,
             maintainAspectRatio: false,
             elements: {
@@ -440,28 +573,37 @@ function createSecurityPostureChart() {
             },
             scales: {
                 r: {
+                    display: true,
                     angleLines: {
                         display: true
                     },
                     suggestedMin: 0,
                     suggestedMax: 100,
                     ticks: {
+                        display: true,
                         stepSize: 20,
                         font: {
                             size: 10
-                        }
+                        },
+                        backdropColor: 'transparent'
                     },
                     pointLabels: {
+                        display: true,
                         font: {
                             size: 11,
                             weight: 'bold'
                         }
+                    },
+                    grid: {
+                        display: true,
+                        color: 'rgba(0, 0, 0, 0.1)'
                     }
                 }
             },
             plugins: {
                 legend: {
                     position: 'top',
+                    display: true,
                     labels: {
                         boxWidth: 12,
                         padding: 10,
@@ -471,6 +613,7 @@ function createSecurityPostureChart() {
                     }
                 },
                 tooltip: {
+                    enabled: true,
                     callbacks: {
                         label: function(context) {
                             return context.dataset.label + ': ' + context.raw + '%';
