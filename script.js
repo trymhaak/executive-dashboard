@@ -33,6 +33,11 @@ function setupTabNavigation() {
 
 // Function to initialize charts with dummy data
 function initializeCharts() {
+    // Common chart options to prevent scaling issues
+    Chart.defaults.font.size = 11;
+    Chart.defaults.responsive = true;
+    Chart.defaults.maintainAspectRatio = false;
+    
     // 1. Security Incidents by Severity Chart
     createSeverityChart();
     
@@ -51,8 +56,22 @@ function initializeCharts() {
     // 6. Top Targeted Systems Chart
     createTargetedSystemsChart();
     
-    // 7. MITRE ATT&CK Coverage Chart
-    createMitreCoverageChart();
+    // 7. Security Posture Chart (replacing MITRE ATT&CK Coverage)
+    createSecurityPostureChart();
+    
+    // Disable automatic resizing which can cause expansion issues
+    Chart.defaults.plugins.resizeDelay = 0;
+    
+    // Handle window resize with debounce to prevent constant redraws
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function() {
+            Chart.instances.forEach(chart => {
+                chart.resize();
+            });
+        }, 250);
+    });
 }
 
 // Function to create Severity Chart
@@ -81,12 +100,25 @@ function createSeverityChart() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    top: 5,
+                    right: 15,
+                    bottom: 10,
+                    left: 10
+                }
+            },
             plugins: {
                 legend: {
                     display: false
                 },
                 title: {
                     display: false
+                },
+                tooltip: {
+                    enabled: true,
+                    mode: 'index',
+                    intersect: false
                 }
             },
             scales: {
@@ -94,7 +126,22 @@ function createSeverityChart() {
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Number of Incidents'
+                        text: 'Number of Incidents',
+                        font: {
+                            size: 12
+                        }
+                    },
+                    ticks: {
+                        font: {
+                            size: 11
+                        }
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: {
+                            size: 11
+                        }
                     }
                 }
             }
@@ -126,9 +173,28 @@ function createStatusChart() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: {
+                padding: 10
+            },
             plugins: {
                 legend: {
-                    position: 'right'
+                    position: 'right',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 10,
+                        font: {
+                            size: 11
+                        }
+                    }
+                },
+                tooltip: {
+                    enabled: true,
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': ' + context.raw + ' (' + 
+                                Math.round((context.raw / context.dataset.data.reduce((a, b) => a + b, 0)) * 100) + '%)';
+                        }
+                    }
                 }
             }
         }
@@ -148,7 +214,9 @@ function createWeeklyAlertVolumeChart() {
             data: [65, 59, 80, 81, 56, 55, 40, 45],
             fill: false,
             borderColor: '#0066cc',
-            tension: 0.1
+            tension: 0.1,
+            pointRadius: 3,
+            pointHoverRadius: 5
         }]
     };
     
@@ -158,9 +226,21 @@ function createWeeklyAlertVolumeChart() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    top: 5,
+                    right: 15,
+                    bottom: 10,
+                    left: 10
+                }
+            },
             plugins: {
                 legend: {
                     display: false
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
                 }
             },
             scales: {
@@ -168,7 +248,24 @@ function createWeeklyAlertVolumeChart() {
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Number of Alerts'
+                        text: 'Number of Alerts',
+                        font: {
+                            size: 12
+                        }
+                    },
+                    ticks: {
+                        font: {
+                            size: 11
+                        }
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: {
+                            size: 11
+                        },
+                        maxRotation: 45,
+                        minRotation: 45
                     }
                 }
             }
@@ -300,26 +397,15 @@ function createTargetedSystemsChart() {
     });
 }
 
-// Function to create MITRE ATT&CK Coverage Chart
-function createMitreCoverageChart() {
-    const ctx = document.getElementById('mitreCoverageChart').getContext('2d');
+// Function to create Security Posture Chart
+function createSecurityPostureChart() {
+    const ctx = document.getElementById('securityPostureChart').getContext('2d');
     
     const data = {
-        labels: [
-            'Initial Access',
-            'Execution',
-            'Persistence',
-            'Privilege Escalation',
-            'Defense Evasion',
-            'Credential Access',
-            'Discovery',
-            'Lateral Movement',
-            'Collection',
-            'Command & Control'
-        ],
+        labels: ['Visibility', 'Protection', 'Detection', 'Response', 'Recovery'],
         datasets: [{
-            label: 'Detection Coverage',
-            data: [85, 70, 65, 60, 55, 45, 80, 40, 50, 75],
+            label: 'Current State',
+            data: [85, 70, 65, 60, 75],
             fill: true,
             backgroundColor: 'rgba(0, 102, 204, 0.2)',
             borderColor: '#0066cc',
@@ -327,6 +413,17 @@ function createMitreCoverageChart() {
             pointBorderColor: '#fff',
             pointHoverBackgroundColor: '#fff',
             pointHoverBorderColor: '#0066cc'
+        }, {
+            label: 'Target State',
+            data: [90, 85, 80, 80, 85],
+            fill: true,
+            backgroundColor: 'rgba(40, 167, 69, 0.1)',
+            borderColor: '#28a745',
+            borderDash: [5, 5],
+            pointBackgroundColor: '#28a745',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: '#28a745'
         }]
     };
     
@@ -338,7 +435,7 @@ function createMitreCoverageChart() {
             maintainAspectRatio: false,
             elements: {
                 line: {
-                    borderWidth: 3
+                    borderWidth: 2
                 }
             },
             scales: {
@@ -347,7 +444,38 @@ function createMitreCoverageChart() {
                         display: true
                     },
                     suggestedMin: 0,
-                    suggestedMax: 100
+                    suggestedMax: 100,
+                    ticks: {
+                        stepSize: 20,
+                        font: {
+                            size: 10
+                        }
+                    },
+                    pointLabels: {
+                        font: {
+                            size: 11,
+                            weight: 'bold'
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 10,
+                        font: {
+                            size: 11
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.raw + '%';
+                        }
+                    }
                 }
             }
         }

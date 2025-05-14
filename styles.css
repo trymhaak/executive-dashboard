@@ -261,10 +261,21 @@ header {
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     position: relative;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .chart-container.wide {
     grid-column: span 2;
+}
+
+.chart-container canvas {
+    width: 100% !important;
+    height: 220px !important;
+    max-height: 220px !important;
+    object-fit: contain;
 }
 
 .chart-container h3 {
@@ -359,6 +370,23 @@ header {
     
     .summary-section {
         grid-template-columns: 1fr;
+    }
+    
+    .chart-container {
+        height: 300px;
+    }
+    
+    .chart-container canvas {
+        max-height: 230px;
+    }
+    
+    .dashboard-tabs {
+        flex-wrap: wrap;
+    }
+    
+    .tab-button {
+        padding: 8px 12px;
+        font-size: 14px;
     }
 }
 
